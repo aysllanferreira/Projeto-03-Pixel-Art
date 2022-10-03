@@ -1,0 +1,25 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .color {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    border: solid 1px black;
+    display: inline-block;
+  }
+  
+  .pixel {
+    height: 40px;
+    width: 40px;
+    display: inline-block;
+    border: solid 1px black;
+    background-color: white;
+    margin-bottom: -5px;
+    margin-right: -1px;
+    border-collapse: collapse;
+  }
+  
