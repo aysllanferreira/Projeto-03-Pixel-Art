@@ -1,1 +1,3 @@
-# Projeto-03-Pixel-Art
+# Projeto Pixel Art
+
+![Project Pixel Art](./pixelArt.png)
