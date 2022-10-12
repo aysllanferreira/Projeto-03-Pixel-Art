@@ -1,9 +1,9 @@
-const numberOfColours = 4; // Numeros de vezes pra repetir os arrays.
+const numberOfColours = 8; // Numeros de vezes pra repetir os arrays.
 const localDb = []; // Guarda as cores no local storage.
 let localDraw = []; // Guarda o desenho feito pelo o usuario.
 const colours = []; // Guarda as cores aleatorias geradas na 1x.
 const selected = 'color selected'; // Insere a classe color selected.
-let numberOfSquares = 25;
+let numberOfSquares = 20 * 20;
 
 // Funcao para gerar uma cor aleatoria em RGB.
 const createRandomColours = () => {
@@ -16,7 +16,7 @@ const createRandomColours = () => {
 
 // Funcao para colocar as cores no Array colours.
 const throwColoursInArray = () => {
-  for (let i = 0; i < 3; i += 1) {
+  for (let i = 0; i < 7; i += 1) {
     createRandomColours();
   }
 };
@@ -26,11 +26,8 @@ const generatingPallete = () => {
   for (let i = 0; i < numberOfColours; i += 1) {
     const getUlList = document.getElementById('color-palette');
     const createLi = document.createElement('li');
-    if (i === 0) {
-      createLi.className = selected;
-    } else {
-      createLi.className = 'color';
-    }
+    if (i === 0) createLi.className = selected;
+    else createLi.className = 'color';
 
     getUlList.appendChild(createLi);
   }
@@ -40,11 +37,8 @@ const generatingPallete = () => {
 const verifyColours = (blackColour, getColours, sum) => {
   for (let i = 0; i < numberOfColours; i += 1) {
     const myLi = document.getElementsByClassName('color')[i];
-    if (i === 0) {
-      myLi.style.backgroundColor = blackColour;
-    } else {
-      myLi.style.backgroundColor = getColours[i - sum];
-    }
+    if (i === 0) myLi.style.backgroundColor = blackColour;
+    else myLi.style.backgroundColor = getColours[i - sum];
   }
 };
 
@@ -78,15 +72,24 @@ const generateColour = () => {
   verifyLocalStorage(localStorageVar, myLi);
 };
 
+const random = () => {
+  const r = Math.floor(Math.random() * 255);
+  const g = Math.floor(Math.random() * 255);
+  const b = Math.floor(Math.random() * 255);
+
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
 // Botao para resetar as cores
 const resetColours = () => {
   const localStorageVar = localStorage.getItem('colorPalette');
   const myLi = document.getElementsByClassName('color');
   const myBtn = document.getElementById('button-random-color');
   myBtn.addEventListener('click', () => {
-    localStorage.clear();
-    verifyLocalStorage(localStorageVar, myLi);
-    document.location.reload(true);
+    const getC = Array.from(myLi);
+    getC.forEach((e) => {
+      e.style.backgroundColor = random();
+    });
   });
 };
 
@@ -118,9 +121,9 @@ const squaresPainting = () => {
 };
 
 // Cria os quadrados dentro do quadro
-const createBoard = (chooseColour) => {
+const createBoard = (chooseColour, num) => {
   const getBoard = document.getElementById('pixel-board');
-  getBoard.style.width = `${40 * 5}px`;
+  getBoard.style.width = `${40 * num}px`;
 
   for (let i = 0; i < numberOfSquares; i += 1) {
     const createSquare = document.createElement('div');
@@ -166,11 +169,11 @@ const cleanBoard = () => {
   });
 };
 
-const renderBoard = () => {
+const renderBoard = (num) => {
   if (JSON.parse(localStorage.getItem('pixelBoard')) == null) {
-    createBoard('white');
+    createBoard('white', num);
   } else {
-    createBoard(JSON.parse(localStorage.getItem('pixelBoard')));
+    createBoard(JSON.parse(localStorage.getItem('pixelBoard')), num);
   }
 };
 
@@ -188,16 +191,19 @@ const verifyQntSquares = (input) => {
 function vamoooo() {
   if (localStorage.getItem('boardSize') !== null) {
     numberOfSquares = localStorage.getItem('boardSize') * localStorage.getItem('boardSize');
+    renderBoard(localStorage.getItem('boardSize'));
+  }else{
+    renderBoard(20);
   }
 }
 
 // Gera dinamicamente os quadradinhos
 const generateBoard = () => {
   vamoooo();
-  renderBoard();
   const getBtnBoard = document.getElementById('generate-board');
   const getInput = document.getElementById('board-size');
-  getBtnBoard.addEventListener('click', () => {
+  getBtnBoard.addEventListener('click', (ev) => {
+    ev.preventDefault();
     localStorage.setItem('boardSize', getInput.value);
     if (getInput.value === '') {
       alert('Board inválido!');
@@ -207,7 +213,7 @@ const generateBoard = () => {
         getBoard.removeChild(getBoard.lastChild);
       }
       verifyQntSquares(getInput);
-      renderBoard();
+      renderBoard(localStorage.getItem('boardSize'));
       squaresPainting();
     }
   });
